@@ -1,0 +1,43 @@
+﻿path,folder,file,type,in_zip,size_bytes,description
+README.md,(root),README.md,md,Yes,45714,"Overview, nightly command order, failure/recovery, version changelog"
+SCRIPT_GUIDE.md,(root),SCRIPT_GUIDE.md,md,Yes,19813,"Every script in execution order: purpose, who runs it, reads/writes"
+DESIGN_v9.md,(root),DESIGN_v9.md,md,Yes,140901,Governing design (140 KB)
+IMPLEMENTATION_STATUS.md,(root),IMPLEMENTATION_STATUS.md,md,Yes,9001,What is implemented vs. still needed per environment
+WHERE_TO_ENTER_VALUES.md,(root),WHERE_TO_ENTER_VALUES.md,md,Yes,16618,"Where each config value, grant and job ID goes"
+config.example.json,(root),config.example.json,json,Yes,4521,Template mapping inventory (copy to a private config.json)
+requirements.txt,(root),requirements.txt,txt,Yes,111,Runtime Python dependencies
+requirements-dev.txt,(root),requirements-dev.txt,txt,Yes,34,Test dependencies
+sql/01_azure_sql_control.sql,sql,01_azure_sql_control.sql,sql,Yes,7446,New control DB: bridge.* tables + bridge.transition_fence
+sql/02_synapse_setup.sql,sql,02_synapse_setup.sql,sql,Yes,2624,"Synapse dedicated pool: bridge_meta audit tables, credential, external data source, Parquet file format (for CETAS)"
+sql/03_upgrade_to_v9_5.sql,sql,03_upgrade_to_v9_5.sql,sql,Yes,8715,In-place upgrade of v9 to v9.5.5 control DBs (rerunnable)
+python/bridge_run.py,python,bridge_run.py,py,Yes,62778,Main orchestrator: extraction (CETAS/Copy) + Databricks loading; --resume
+python/publish_run.py,python,publish_run.py,py,Yes,18040,Gated publication to consumer tables/pointers; --resume
+python/fence.py,python,fence.py,py,Yes,12588,"Source fence transitions (calls bridge.transition_fence), abandon/reopen"
+python/recovery.py,python,recovery.py,py,Yes,15905,Evidence-gated resolution of indeterminate attempts/publications
+python/upstream_audit.py,python,upstream_audit.py,py,Yes,3254,Records upstream run/object audit while writer holds WRITE_ACTIVE
+python/render_setup.py,python,render_setup.py,py,Yes,5749,Generates azure_sql_seed.sql + unity_catalog_setup.sql per wave
+python/generate_mappings.py,python,generate_mappings.py,py,Yes,6672,"Discovers a Synapse schema, writes a pinned mapping config"
+python/profile_inventory.py,python,profile_inventory.py,py,Yes,6492,DMV-based size profiling -> new inventory version + CSV report
+python/source_metadata.py,python,source_metadata.py,py,Yes,1472,Source schema hash (CLI + shared library)
+python/deploy_synapse_pipeline.py,python,deploy_synapse_pipeline.py,py,Yes,7396,Optional: deploys the Copy pipeline and datasets
+python/retire_releases.py,python,retire_releases.py,py,Yes,11345,Retention planning/execution (dry run by default)
+databricks/load_candidate.py,databricks,load_candidate.py,py,Yes,7866,Loader Job: Parquet -> Delta candidate / snapshot slice
+databricks/publish.py,databricks,publish.py,py,Yes,10471,Strategy A publisher + group-pointer publisher (PUBLISH/INSPECT)
+databricks/retire_releases.py,databricks,retire_releases.py,py,Yes,4338,"Retention Job: drops candidates, deletes staging"
+databricks/generate_mappings_pyspark.py,databricks,generate_mappings_pyspark.py,py,Yes,5424,Cluster alternative to python/generate_mappings.py (UC JDBC)
+databricks/profile_inventory_pyspark.py,databricks,profile_inventory_pyspark.py,py,Yes,9196,Cluster alternative to python/profile_inventory.py
+synapse_pipeline/bridge_copy_to_parquet.pipeline.json,synapse_pipeline,bridge_copy_to_parquet.pipeline.json,json,Yes,2036,Synapse Copy pipeline: dedicated pool -> Parquet in ADLS staging
+synapse_pipeline/bridge_synapse_source.dataset.json,synapse_pipeline,bridge_synapse_source.dataset.json,json,Yes,293,Synapse dedicated-pool source dataset for the Copy pipeline
+synapse_pipeline/bridge_parquet_sink.dataset.json,synapse_pipeline,bridge_parquet_sink.dataset.json,json,Yes,480,ADLS Parquet sink dataset for the Copy pipeline
+tests/test_contract.py,tests,test_contract.py,py,Yes,11036,"Config, manifest, path and naming contract checks"
+tests/test_orchestration_sim.py,tests,test_orchestration_sim.py,py,Yes,30340,End-to-end bridge_run/publish_run against SQLite stand-ins
+tests/test_static.py,tests,test_static.py,py,Yes,1246,AST checks: no rebound functions; PACKAGE_DIR matches folder name
+tests/test_v94_regressions.py,tests,test_v94_regressions.py,py,Yes,10227,Regression tests for v9.4 fixes
+tests/test_v95_regressions.py,tests,test_v95_regressions.py,py,Yes,6767,Regression tests for v9.5 fixes
+tests/test_v952_regressions.py,tests,test_v952_regressions.py,py,Yes,10060,Regression tests for v9.5.2 fixes
+tests/test_v955_regressions.py,tests,test_v955_regressions.py,py,Yes,12557,Regression tests for v9.5.5 fixes
+tests/test_v956_regressions.py,tests,test_v956_regressions.py,py,Yes,14936,Regression tests for v9.5.6 fixes
+tests/test_v957_regressions.py,tests,test_v957_regressions.py,py,Yes,6730,Regression tests for v9.5.7 fixes
+tests/test_v958_regressions.py,tests,test_v958_regressions.py,py,Yes,18368,Regression tests for v9.5.8 fixes
+generated/azure_sql_seed.sql,generated,azure_sql_seed.sql,sql,No (generated),,Run in Azure SQL control DB
+generated/unity_catalog_setup.sql,generated,unity_catalog_setup.sql,sql,No (generated),,Run on a Databricks SQL warehouse
